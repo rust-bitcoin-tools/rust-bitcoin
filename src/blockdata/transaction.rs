@@ -290,7 +290,16 @@ impl Transaction {
         // lock_time
         4;
         if inputs_with_witnesses == 0 {
-            non_input_size * 4 + input_weight
+            if self.input.is_empty() {
+                // If there are no inputs, then the transaction is serialized identically
+                // even after stripping witnesses (that is, even the segwit flag bytes are
+                // still there). Using the "length + 3 * stripped_length" formula, this
+                // means that the segwit flag bytes are considered to be non-witness bytes,
+                // and therefore have weight 8.
+                non_input_size * 4 + 8
+            } else {
+                non_input_size * 4 + input_weight
+            }
         } else {
             non_input_size * 4 + input_weight + self.input.len() as u64 - inputs_with_witnesses + 2
         }
