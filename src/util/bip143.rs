@@ -194,6 +194,23 @@ mod tests {
     }
 
     #[test]
+    fn bip143_p2wsh() {
+        let tx = deserialize::<Transaction>(
+            &hex_bytes(
+                "0100000002fe3dc9208094f3ffd12645477b3dc56f60ec4fa8e6f5d67c565d1c6b9216b36e000000\
+                0000ffffffff0815cf020f013ed6cf91d29f4202e8a58726b1ac6c79da47c23d1bee0a6925f800000000\
+                00ffffffff0100f2052a010000001976a914a30741f8145e5acadf23f751864167f32e0963f788ac0000\
+                0000").unwrap()[..],
+        ).unwrap();
+
+        let witness_script = "21026dccc749adc2a9d0d89497ac511f760f45c47dc5ed9cf352a58ac706453880aeadab210255a9626aebf5e29c0e6538428ba0d1dcf6ca98ffdf086aa8ced5e0d0215ea465ac";
+        let value = 4_900_000_000;
+
+        let comp = SighashComponents::new(&tx);
+        println!("{:?}", comp);
+    }
+
+    #[test]
     fn bip143_p2wsh_nested_in_p2sh() {
         let tx = deserialize::<Transaction>(
             &hex_bytes(
